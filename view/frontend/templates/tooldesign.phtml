@@ -1,0 +1,126 @@
+<?php
+$isEnabled = $block->isEnabled();
+if (!$isEnabled) { return;
+}
+?>
+
+<?php if ($block->getProduct()->getTypeId() == 'configurable'):?>
+  <script>
+    requirejs(['jquery','underscore'], function($,_){
+      var interval = setInterval(function () {
+        var simpleId = $('input[name=selected_configurable_option]').val();
+        var convert = parseInt(simpleId);
+        if(convert > 0){
+          clearInterval(interval);
+
+          $('body').trigger('processStart');
+          var url = 'design/ajax/index';
+          $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            data: {
+              id: convert,
+              parentId: <?php echo $block->getProduct()->getId()?>
+            },
+            success: function(response) {
+              if(response.content) {
+                if($('#pcdesigntool-design-btn').length) $('#pcdesigntool-design-btn').remove();
+                if($('#printcart-integration-container-tmp').length) $('#printcart-integration-container-tmp').remove();
+                $('body').append('<div id="printcart-integration-container-tmp"></div>');
+                $('#printcart-integration-container-tmp').append(response.content);
+              } else {
+                $('#printcart-integration-container-tmp').remove();
+                $('#pcdesigntool-design-btn').remove();
+              }
+              $('body').trigger('processStop');
+            },
+            error: function (xhr, status, errorThrown) {
+              console.log('Error happens. Try again.');
+            }
+          });
+        }
+    }, 100);
+    
+    $(".product-options-wrapper select[id^='attribute']").last().on('change', function() {
+      setTimeout(function() {
+        var convert = parseInt($('input[name=selected_configurable_option]').val());
+
+        $('body').trigger('processStart');
+        var url = 'design/ajax/index';
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          data: {
+            id: convert,
+            parentId: <?php echo $block->getProduct()->getId()?>
+          },
+          success: function(response) {
+            if(response.content) {
+              if($('#pcdesigntool-design-btn').length) $('#pcdesigntool-design-btn').remove();
+              if($('#printcart-integration-container-tmp').length) $('#printcart-integration-container-tmp').remove();
+              $('body').append('<div id="printcart-integration-container-tmp"></div>');
+              $('#printcart-integration-container-tmp').append(response.content);
+            } else {
+              $('#printcart-integration-container-tmp').remove();
+              $('#pcdesigntool-design-btn').remove();
+            }
+            $('body').trigger('processStop');
+          },
+          error: function (xhr, status, errorThrown) {
+            console.log('Error happens. Try again.');
+          }
+        });
+      }, 100);
+    });
+  });
+</script>
+<?php else:?> 
+
+    <?php
+    $product = $block->getProductIntegration();
+    if (!$product || $product['status'] != 'publish') { return;
+    }
+    ?>
+<script type="text/javascript" async="" id="printcart-design-tool-sdk" data-unauthtoken="<?= $block->getAccessToken();?>" data-productid="<?= $product['id'];?>" src="https://sdk.printcart.com/customizer/1.0.0/main.js"></script>
+
+<script type="text/javascript">
+  var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
+
+  window.addEventListener("message", (event) => {
+    if (event.origin === "https://customizer.printcart.com" && event.data.message == 'finishProcess') {
+      const pcDesignResponseBox = document.getElementById("printcart-design-response");
+      if(pcDesignResponseBox) pcDesignResponseBox.remove();
+
+      var designs = event.data.data.data;
+      var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
+
+      if (productDataStorage) {
+        productDataStorage[<?php echo $block->getProduct()->getId();?>].designs = designs;
+        localStorage.setItem('product_data_storage', JSON.stringify(productDataStorage));
+
+        var previewHtml = '<div id="printcart-design-response">';
+        var designsInput = '<div>';
+        designs.forEach(function(item, index) {
+          previewHtml += '<image src="'+item.design_image.url+'">';
+          designsInput += '<input type="hidden" name=designs['+index+'][id] value="'+item.id+'">';
+          designsInput += '<input type="hidden" name=designs['+index+'][preview] value="'+item.design_image.url+'">';
+        });
+
+        previewHtml += '</div>';
+        designsInput += '</div>';
+
+        var productBox = document.querySelector(".product-info-main");
+        productBox.insertAdjacentHTML('beforeend', previewHtml);
+
+        var productAddForm = document.querySelector("#product_addtocart_form");
+        productAddForm.insertAdjacentHTML('beforeend', designsInput);
+        
+        document.getElementById("pcdesigntool-iframe-wrapper").style.opacity = 0;
+        document.getElementById("pcdesigntool-iframe-wrapper").style.visibility = 'hidden';
+      }
+    }
+  }, false);
+</script>
+<?php endif;?>

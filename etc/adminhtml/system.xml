@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+ * @author Printcart <printcart@gmail.com>
+ * Created at 01/18/21 10:00 AM GTM+07:00
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="printcart" translate="label" sortOrder="1000">
+            <label>Printcart</label>
+        </tab>
+        <section id="design" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Design Tool</label>
+            <tab>printcart</tab>
+            <resource>Printcart_Design::printcart_design</resource>
+            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="enable" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="api_key" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>API Key</label>
+                    <comment><![CDATA[Click <a href="https://dashboard.printcart.com/settings" target="_blank">here</a> to get API Key]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

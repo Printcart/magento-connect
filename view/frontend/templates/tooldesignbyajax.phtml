@@ -1,0 +1,52 @@
+<?php
+$productId = $block->getData('integration_product_id');
+if ($productId) {
+    $product = $block->getProductIntegrationByAjax($productId);
+    if (!$product || $product['status'] != 'publish') { return;
+    }
+} else {
+    return;
+}
+
+$parentId = $block->getData('parent_id');
+?>
+<script type="text/javascript" async="" id="printcart-design-tool-sdk" data-unauthtoken="<?= $block->getAccessToken();?>" data-productid="<?= $product['id'];?>" src="https://sdk.printcart.com/customizer/1.0.0/main.js"></script>
+
+<script type="text/javascript">
+  var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
+
+  window.addEventListener("message", (event) => {
+    if (event.origin === "https://customizer.printcart.com" && event.data.message == 'finishProcess') {
+      const pcDesignResponseBox = document.getElementById("printcart-design-response");
+      if(pcDesignResponseBox) pcDesignResponseBox.remove();
+
+      var designs = event.data.data.data;
+      var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
+
+      if (productDataStorage) {
+        productDataStorage[<?php echo $parentId;?>].designs = designs;
+        localStorage.setItem('product_data_storage', JSON.stringify(productDataStorage));
+
+        var previewHtml = '<div id="printcart-design-response">';
+        var designsInput = '<div>';
+        designs.forEach(function(item, index) {
+          previewHtml += '<image src="'+item.design_image.url+'">';
+          designsInput += '<input type="hidden" name=designs['+index+'][id] value="'+item.id+'">';
+          designsInput += '<input type="hidden" name=designs['+index+'][preview] value="'+item.design_image.url+'">';
+        });
+
+        previewHtml += '</div>';
+        designsInput += '</div>';
+
+        var productBox = document.querySelector(".product-info-main");
+        productBox.insertAdjacentHTML('beforeend', previewHtml);
+
+        var productAddForm = document.querySelector("#product_addtocart_form");
+        productAddForm.insertAdjacentHTML('beforeend', designsInput);
+        
+        document.getElementById("pcdesigntool-iframe-wrapper").style.opacity = 0;
+        document.getElementById("pcdesigntool-iframe-wrapper").style.visibility = 'hidden';
+      }
+    }
+  }, false);
+</script>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- override checkout cart item template -->
+        <referenceBlock name="checkout.cart.form">
+            <action method="setOverriddenTemplates">
+                <argument name="onlinedesign.cart.items" xsi:type="array">
+                    <!-- list override templates -->
+                    <item name="default" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                    <item name="simple" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                    <item name="virtual" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                    <item name="configurable" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                    <item name="downloadable" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                    <item name="bundle" xsi:type="string">Printcart_Design::cart/item/default.phtml</item>
+                </argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

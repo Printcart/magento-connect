@@ -1,0 +1,22 @@
+{
+  "name": "printcart/magento-connect",
+  "description": "Printcart Connect for Magento 2",
+  "type": "magento2-module",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "name": "Printcart",
+      "email": "sales@printcart.com",
+      "homepage": "https://www.printcart.com/"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Printcart\\Design\\": ""
+    }
+  },
+  "license": "MIT"
+}

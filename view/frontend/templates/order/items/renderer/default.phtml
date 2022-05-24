@@ -1,0 +1,90 @@
+<?php /** @var \Magento\Sales\Block\Order\Item\Renderer\DefaultRenderer $block */ ?>
+<?php
+$_item = $block->getItem();
+$jsonHelper = $block->helper('Magento\Framework\Json\Helper\Data');
+?>
+<tr id="order-item-row-<?= /* @escapeNotVerified */ $_item->getId() ?>">
+    <td class="col name" data-th="<?= $block->escapeHtml(__('Product Name')) ?>">
+        <strong class="product name product-item-name"><?= $block->escapeHtml($_item->getName()) ?></strong>
+        <?php if ($_item->getDesigns()): ?>
+            <?php $designs = $jsonHelper->jsonDecode($_item->getDesigns());?>
+            <div class="design-container">
+                <strong>Designs List</strong>
+                <?php foreach ($designs as $design):?>
+                    <div class="downloads-item">
+                        <div class="item-icon">
+                            <svg viewBox="0 0 512 512" height="16" width="16" class="icon"><path d="M156.2,199.7c7.5-7.5,15.9-13.8,24.8-18.7c49.6-27.3,113.1-12.8,145,35.5l-38.5,38.5c-11.1-25.2-38.5-39.6-65.8-33.5c-10.3,2.3-20.1,7.4-28,15.4l-73.9,73.9c-22.4,22.4-22.4,58.9,0,81.4c22.4,22.4,58.9,22.4,81.4,0l22.8-22.8c20.7,8.2,42.9,11.5,64.9,9.9l-50.3,50.3c-43.1,43.1-113,43.1-156.1,0c-43.1-43.1-43.1-113-0-156.1L156.2,199.7z M273.6,82.3l-50.3,50.3c21.9-1.6,44.2,1.6,64.9,9.9l22.8-22.8c22.4-22.4,58.9-22.4,81.4,0c22.4,22.4,22.4,58.9,0,81.4l-73.9,73.9c-22.5,22.5-59.1,22.3-81.4,0c-5.2-5.2-9.7-11.7-12.5-18l-38.5,38.5c4,6.1,8.3,11.5,13.7,16.9c13.9,13.9,31.7,24.3,52.1,29.3c26.5,6.4,54.8,2.8,79.2-10.6c8.9-4.9,17.3-11.1,24.8-18.7l73.9-73.9c43.1-43.1,43.1-113,0-156.1C386.6,39.2,316.7,39.2,273.6,82.3z"></path></svg>
+                        </div>
+                        <div class="item-link">
+                            <a href="https://dashboard.printcart.com/design/<?php echo $design['id'];?>" rel="2" target="_blank" title="File Downloads">
+                                <b><?php echo $design['id'];?></b>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach;?>
+            </div>
+        <?php endif;?>
+        <?php if ($_options = $block->getItemOptions()): ?>
+            <dl class="item-options">
+                <?php foreach ($_options as $_option): ?>
+                    <dt><?= $block->escapeHtml($_option['label']) ?></dt>
+                    <?php if (!$block->getPrintStatus()): ?>
+                        <?php $_formatedOptionValue = $block->getFormatedOptionValue($_option) ?>
+                        <dd>
+                            <?php if (isset($_formatedOptionValue['full_view'])): ?>
+                                <?= $block->escapeHtml($_formatedOptionValue['full_view'], ['a']) ?>
+                            <?php else: ?>
+                                <?=$block->escapeHtml($_formatedOptionValue['value'], ['a']) ?>
+                            <?php endif; ?>
+                        </dd>
+                    <?php else: ?>
+                        <dd>
+                            <?= nl2br($block->escapeHtml((isset($_option['print_value']) ? $_option['print_value'] : $_option['value']))) ?>
+                        </dd>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </dl>
+
+        <?php endif; ?>
+        <?php $addtInfoBlock = $block->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addtInfoBlock):?>
+            <?= $addtInfoBlock->setItem($_item)->toHtml() ?>
+        <?php endif; ?>
+        <?= $block->escapeHtml($_item->getDescription()) ?>
+    </td>
+    <td class="col sku" data-th="<?= $block->escapeHtml(__('SKU')) ?>"><?= /* @escapeNotVerified */ $block->prepareSku($block->getSku()) ?></td>
+    <td class="col price" data-th="<?= $block->escapeHtml(__('Price')) ?>">
+        <?= $block->getItemPriceHtml() ?>
+    </td>
+    <td class="col qty" data-th="<?= $block->escapeHtml(__('Qty')) ?>">
+        <ul class="items-qty">
+            <?php if ($block->getItem()->getQtyOrdered() > 0): ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Ordered') ?></span>
+                    <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyOrdered()*1 ?></span>
+                </li>
+            <?php endif; ?>
+            <?php if ($block->getItem()->getQtyShipped() > 0): ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Shipped') ?></span>
+                    <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyShipped()*1 ?></span>
+                </li>
+            <?php endif; ?>
+            <?php if ($block->getItem()->getQtyCanceled() > 0): ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Canceled') ?></span>
+                    <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyCanceled()*1 ?></span>
+                </li>
+            <?php endif; ?>
+            <?php if ($block->getItem()->getQtyRefunded() > 0): ?>
+                <li class="item">
+                    <span class="title"><?= /* @escapeNotVerified */ __('Refunded') ?></span>
+                    <span class="content"><?= /* @escapeNotVerified */ $block->getItem()->getQtyRefunded()*1 ?></span>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </td>
+    <td class="col subtotal" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
+        <?= $block->getItemRowTotalHtml() ?>
+    </td>
+</tr>
