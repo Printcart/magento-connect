@@ -1,7 +1,7 @@
 <?php /** @var \Magento\Sales\Block\Order\Item\Renderer\DefaultRenderer $block */ ?>
 <?php
 $_item = $block->getItem();
-$jsonHelper = $block->helper('Magento\Framework\Json\Helper\Data');
+$jsonHelper = $this->helper('Magento\Framework\Json\Helper\Data');
 ?>
 <tr id="order-item-row-<?= /* @escapeNotVerified */ $_item->getId() ?>">
     <td class="col name" data-th="<?= $block->escapeHtml(__('Product Name')) ?>">
