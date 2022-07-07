@@ -1,7 +1,7 @@
 <?php /** @var \Magento\Sales\Block\Adminhtml\Order\View\Items\Renderer\DefaultRenderer $block */ ?>
 <?php $_item = $block->getItem() ?>
 <?php $block->setPriceDataObject($_item) ?>
-<?php $jsonHelper = $block->helper('Magento\Framework\Json\Helper\Data');?>
+<?php $jsonHelper = $this->helper('Magento\Framework\Json\Helper\Data');?>
 <tr>
     <?php $i = 0;
     $columns = $block->getColumns();
