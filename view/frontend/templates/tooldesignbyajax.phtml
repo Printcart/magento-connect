@@ -13,20 +13,14 @@ $parentId = $block->getData('parent_id');
 <script type="text/javascript" async="" id="printcart-design-tool-sdk" data-unauthtoken="<?= $block->getAccessToken();?>" data-productid="<?= $product['id'];?>" src="https://sdk.printcart.com/customizer/1.0.0/main.js"></script>
 
 <script type="text/javascript">
-  var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
-
   window.addEventListener("message", (event) => {
     if (event.origin === "https://customizer.printcart.com" && event.data.message == 'finishProcess') {
       const pcDesignResponseBox = document.getElementById("printcart-design-response");
       if(pcDesignResponseBox) pcDesignResponseBox.remove();
 
       var designs = event.data.data.data;
-      var productDataStorage = JSON.parse(localStorage.getItem('product_data_storage'));
 
-      if (productDataStorage) {
-        productDataStorage[<?php echo $parentId;?>].designs = designs;
-        localStorage.setItem('product_data_storage', JSON.stringify(productDataStorage));
-
+      if (designs) {
         var previewHtml = '<div id="printcart-design-response">';
         var designsInput = '<div>';
         designs.forEach(function(item, index) {
