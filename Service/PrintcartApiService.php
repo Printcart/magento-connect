@@ -145,7 +145,7 @@ class PrintcartApiService
         ]]);
 
         $headers = [
-            'Authorization' => 'Bearer ' . $token,
+            'X-PrintCart-Unauth-Token' => $token,
             'Content-Type'  => 'application/json'
         ];
 
