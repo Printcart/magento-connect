@@ -4,9 +4,9 @@ $_item = $block->getItem();
 $product = $_item->getProduct();
 $isVisibleProduct = $product->isVisibleInSiteVisibility();
 /** @var \Magento\Msrp\Helper\Data $helper */
-$helper = $block->helper(Magento\Msrp\Helper\Data::class);
+$helper = $this->helper(Magento\Msrp\Helper\Data::class);
 $canApplyMsrp = $helper->isShowBeforeOrderConfirm($product) && $helper->isMinimalPriceLessMsrp($product);
-$jsonHelper = $block->helper('Magento\Framework\Json\Helper\Data');
+$jsonHelper = $this->helper('Magento\Framework\Json\Helper\Data');
 ?>
 <tbody class="cart item">
     <tr class="item-info">
